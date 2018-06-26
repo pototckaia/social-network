@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-//use Illuminate\Foundation\Auth\AuthenticatesUsers;
-//use Illuminate\Support\Facades\Auth as Auth;
+use App\Http\Controllers\Authentication;
 use App\User;
 
 use Illuminate\Http\Request;
@@ -11,13 +10,14 @@ use Illuminate\Cookie\CookieJar;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Cookie;
 
 class LoginController extends Controller
 {
 
-    const redirectTo = '/home';
+    const redirectTo = '/';
 
     public function __construct()
     {
@@ -53,11 +53,8 @@ class LoginController extends Controller
             return back()->withErrors(['general' => 'Wrong login or password']);
         }
 
-        session()->regenerate();
-        $id_session =  session()->getId();
-        session()->put('user', $user);
-
-        Cookie::queue(Cookie::make('id_session', $id_session));
+        Authentication::regenerate();
+        Authentication::setAuthUser($user);
 
         return redirect()->intended($this::redirectTo);
 
@@ -65,12 +62,9 @@ class LoginController extends Controller
 
     public function logout(Request $request) {
 
-        session()->regenerate();
-        session()->pull('user');
-        session()->forget('user');
+        Authentication::regenerate();
+        Authentication::forgetAuthUser();
 
-        Cookie::queue(Cookie::forget('id_session'));
-
-        return redirect()->intended($this::redirectTo);
+        return redirect($this::redirectTo);
     }
 }

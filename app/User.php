@@ -3,10 +3,10 @@
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
-//use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\UploadedFile as File;
 
 class User extends Model
 {
@@ -40,36 +40,49 @@ class User extends Model
 
     public function posts()
     {
-        return $this->hasMany('App\Post', 'id_post', 'id');
+        return $this->hasMany('App\Post', 'id_owner', 'id');
     }
 
-//    public function update() {
-//
-//    }
-
     public static function findByLogin(string $login) {
-        return DB::table(static::$name_table)->where('login', $login);
+        $user = static::where('login', $login)->get()[0];
+        return $user;
     }
 
     public static function findByCredential(array $credential) {
-        $user = DB::table(static::$name_table)->where('login', $credential['login']);
+        $user = static::where('login', $credential['login'])->first();
         if (is_null($user)) { // norm?
             return null;
         }
 
-        $password = $user->pluck('password')[0];
+        $password = $user->password;
 
         if (Hash::check($credential['password'], $password)) {
+            $user = static::find($user->id);
             return $user;
         }
 
         return null;
     }
 
-    public function isAuthorized()
-    {
-        return session()->get('user')->id == $this->id;
+
+    public function getPathToAvatar() {
+        return Avatar::getPath($this->filename_avatar);
     }
+
+    public function saveAvatar(File &$image) {
+        $name = Avatar::save($image);
+        $this->filename_avatar = $name;
+        $this->save();
+    }
+
+    public function delete() {
+        Avatar::delete($this->filename_avatar);
+        parent::delete();
+    }
+
+
+
+
 
 //    public function isOwnerPost($postId) {
 //        $post = Post::find($postId);

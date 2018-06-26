@@ -16,18 +16,14 @@ class Authentication
      */
     public function handle($request, Closure $next)
     {
-        $id_session =  session()->getId();
-        $id_cookie = $request->cookie('id_session');
 
-        session()->regenerate();
-        $new_id = session()->getId();
-
-        Cookie::queue(Cookie::make('id_session', $new_id));
-
-        if ($id_cookie !== $id_session) {
+        if (!\App\Http\Controllers\Authentication::isHappen()) {
             return redirect()->route('welcome');
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        \App\Http\Controllers\Authentication::save();
+        return $response;
     }
 }

@@ -19,7 +19,7 @@ class CreatePosts extends Migration
            $table->unsignedInteger('id_owner');
            $table->string('title')->nullable();
            $table->text('content')->nullable();
-           $table->boolean('comments_enable');
+           $table->boolean('comments_enable')->default(1);
            $table->timestamps();
         });
 

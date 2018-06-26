@@ -1,0 +1,41 @@
+
+
+#oauth {
+    width: 400px
+}
+
+#page-content > * > div:last-child {
+    margin-bottom: 60px;
+}
+
+#page-content > * > div:first-child {
+    margin-top: 55px;
+}
+
+#form-container {
+    border: 1px solid #b7b7b7;
+    padding: 30px;
+    margin: 25px 0 20px;
+}
+
+#create-id #form-input {
+    margin-bottom: 25px;
+}
+
+#form-input {
+    margin-bottom: 40px;
+}
+
+#form-input > *, #form-main > * {
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+#form-input > :last-child, #form-main > :last-child {
+    margin-bottom: 0;
+}
+
+#create-id-btn {
+    width: 50%;
+    margin-bottom: 10px;
+}

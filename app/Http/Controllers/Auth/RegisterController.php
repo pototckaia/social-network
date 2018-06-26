@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Authentication;
 use App\User;
+use App\Avatar;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,7 +18,7 @@ class RegisterController extends Controller
 {
 //    use RegistersUsers;
 
-    const redirectTo = '/home';
+    const redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -38,7 +40,6 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'login' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:2|confirmed',
-//            'image' => 'image|mimes:jpeg,png,bmp,gif,svg|max:100'
         ]);
     }
 
@@ -52,7 +53,7 @@ class RegisterController extends Controller
         return User::create([
             'login' => $data['login'],
             'password' => Hash::make($data['password']),
-            'path_to_avatar' => null,
+            'filename_avatar' => null,
             'about' => null,
 
         ]);
@@ -69,12 +70,7 @@ class RegisterController extends Controller
 
 
         $user = $this->create($request->all());
-
-        $session_id =  session()->getId();
-        session()->put('user', $user);
-
-        Cookie::queue('session_id', $session_id);
-
+        Authentication::setAuthUser($user);
 
         return redirect($this::redirectTo);
     }

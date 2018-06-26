@@ -3,38 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\User;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        $comment = new App\Comment(['message' => 'A new comment.']);
-
-        $post = App\Post::find(1);
-
-        $post->comments()->save($comment);
-
-        $post = App\Post::find(1);
-
-        $post->comments()->saveMany([
-            new App\Comment(['message' => 'A new comment.']),
-            new App\Comment(['message' => 'Another comment.']),
-        ]);
-
-        $post = App\Post::find(1);
-
-        $comment = $post->comments()->create([
-            'message' => 'A new comment.',
-        ]);
-
-        $posts = Auth::user()->posts;
-        return view('.index',compact('events'));
+        $this->middleware('authentication')->except('show');
     }
 
     /**
@@ -44,7 +20,10 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('events.create');
+        $title = "Create post";
+        $route_name  = 'post.store';
+        $method = 'post';
+        return view('post_operation', ['title' => $title, 'route_name' => $route_name, 'method' => $method]);
     }
 
     /**
@@ -55,11 +34,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $event = new Event($request->all());
+        $data = $request->all();
+        $post = new Post();
 
-        Auth::user()->events()->save($event);
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->comments_enable = $request->has('comments_enable');
+        $post->save();
+        Authentication::user()->posts()->save($post);
 
-        return redirect('events');
+        return route('post.show');
     }
 
     /**
@@ -70,11 +54,15 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        if ( $event->id == Auth::user()->id ) {
-            return view('events.show', compact('event'));
-        }
+        $is_owner = (Authentication::isHappen() && $post->id_owner == Authentication::user()->id);
+        $owner = User::find($post->id_owner);
 
-        abort(403);
+        $comments = $post->comments();
+
+        return view('post_show', [
+            'post' => $post,
+            'owner' => $owner,
+            'all_comments' => $comments]);
     }
 
     /**
@@ -85,7 +73,12 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $title = "Edit post";
+        $route_name  = 'post.update';
+        $method = 'put';
+        $edit = true;
+        return view('post_operation', ['title' => $title, 'route_name' => $route_name,
+            'method' => $method, 'edit' => $edit, 'post' => $post]);
     }
 
     /**
@@ -97,7 +90,14 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $data = $request->all();
+        $post->title = $data['title'];
+        $post->content = $data['content'];
+        $post->comments_enable = $request->has('comments_enable');
+        $post->save();
+        Authentication::user()->posts()->save($post);
+
+        return route('post.show');
     }
 
     /**
@@ -108,6 +108,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return route('me');
     }
 }

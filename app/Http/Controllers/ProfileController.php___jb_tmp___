@@ -67,7 +67,7 @@ class ProfileController extends Controller
         $valid_avatar = Validator::make($request->all(), ['avatar' => 'image|max:1000|mimes:jpeg,jpg,png']);
         if ($valid_avatar->passes() && $request->hasFile('avatar') && $request->file('avatar')->isValid()) {
             $file = $request->file('avatar');
-            $user::saveIvatar($file);
+            $user->saveAvatar($file);
             return $user;
         }
 

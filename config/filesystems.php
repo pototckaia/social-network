@@ -57,7 +57,7 @@ return [
 
         'avatar' => [
             'driver' => 'local',
-            'root'   => public_path() . '/image/user_avatar',
+            'root'   => storage_path('app/public').'/image/user_avatar',
         ],
 
         's3' => [
