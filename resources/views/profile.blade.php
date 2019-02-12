@@ -6,60 +6,63 @@
 @stop
 
 @section('content')
-    <div class="main-content-profile">
+        <div class="row">
+        <div class="card">
 
-        @include('user_card', ['user' => $user])
-
-        <div class="content-user-profile">
-
-            <div class="post ">
-                <div class="preview">
-                    Akfula commented on beta_testers_on_steam_vr_needed Beta testers on Steam VR needed Posted by
+            <div class="col-xs-12 col-sm-4 center">
+                <div class="profile-picture">
+                    <img class="editable img-responsive" alt=" Avatar" src="{{ asset($user->getPathToAvatar())}}" >
                 </div>
-                <div class="wrap-con-post ">
-                    <div class="con-post">
-                        I'm interested to take part in beta.
+            </div><!-- /.col -->
+
+            <div class="col-xs-12 col-sm-5 info">
+                <h2 class="profile-title">
+                    <span>{{ $user->login }}</span>
+                </h2>
+
+                <div class="profile-user-info">
+
+                    <div class="profile-info-row">
+                        <div class="profile-info-name"> Contact with me:</div>
+                        <div class="profile-info-value">
+                            <span>{{ $user->email != '' ? $user->email: '---' }}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="hr hr-8 dotted"></div>
+
+                {{--<div class="profile-user-info">--}}
+                    {{--<div class="profile-info-row">--}}
+                        {{--<div class="profile-info-name">My post here</div>--}}
+                        {{--<div class="profile-info-value">--}}
+                            {{--<a href="{{route('post.index')}}" > -> </a>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+
+                <div class="profile-user-info">
+                    <div class="profile-info-row">
+                        <div class="profile-info-name profile-about"> About me:</div>
+                        <div class="profile-info-value">
+                            <span>{{ $user->about != '' ? $user->about : '---'}}<span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="post ">
-                <div class="preview">
-                    Akfula commented on beta_testers_on_steam_vr_needed Beta testers on Steam VR needed Posted by
-                </div>
-                <div class="wrap-con-post ">
-                    <div class="con-post">
-                        I'm interested to take part in beta.
+
+                <div class="profile-user-info">
+                    <div class="profile-info-row">
+                        <div class="profile-info-name profile-about"> Number of posts: </div>
+                        <div class="profile-info-value">
+                            <span>{{ $count }}<span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-
     </div>
-
-
-    {{--<p>Post</p>--}}
-    {{--@foreach ($user->posts as $post)--}}
-        {{--<a href="{{ route('post.show', ['id' => $post->id]) }}"> {{ $post->title }} </a>--}}
-
-        {{--<p> submitted {{$post->created_at }} by {{ $user->login }} </p>--}}
-
-        {{--<a href="{{ route('post.show', ['id' => $post->id]) }}">--}}
-            {{--{{ $post->comments->count() }} comments</a>--}}
-    {{--@endforeach--}}
-
-    {{--<p> Comment </p>--}}
-    {{--@foreach($user->comments as $comment)--}}
-        {{--<p>{{ $comment->post->title }} by </p>--}}
-        {{--<a href={{ route('user.profile', ['id' => $comment->post->user->id ]) }}>--}}
-            {{--{{ $comment->post->user->login }}--}}
-        {{--</a>--}}
-
-        {{--<p> create {{ $comment->created_at }} </p>--}}
-        {{--<p> {{ $comment->content }} </p>--}}
-        {{--<a href="{{ route('post.show', ['id' => $comment->post->id]) }}"> full comments </a>--}}
-
-    {{--@endforeach--}}
 
 @stop

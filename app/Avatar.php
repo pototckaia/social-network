@@ -15,15 +15,24 @@ class Avatar
         return "storage/image/user_avatar";
     }
 
-//    static public function getFileName(File $file) {
-//        return data('d.m.Y').$file->getClientOriginalName();
-//    }
+    static private function rand($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
+    static public function getFileName(File $file) {
+        return $file->getClientOriginalName().self::rand();
+    }
 
     static public function save(File &$image)
     {
 
-        $path = $image->store('avatar');
-        $name = $image->getClientOriginalName();
+        $name = Storage::disk('avatar')->putFile('', $image);
         return $name;
 
 //        $path = Storage::disk('avatar')->putFile('file.txt', $image);

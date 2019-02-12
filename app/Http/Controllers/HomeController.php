@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User as User;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -16,7 +17,11 @@ class HomeController extends Controller
     public function show() {
 
         $user_auth = Authentication::user();
-        return view('home', ['user' => $user_auth]);
+        $posts  = DB::table('posts')
+            ->join('users', 'users.id', '=', 'posts.id_owner')
+            ->where('users.id', '=', $user_auth->id)
+            ->get();
+        return view('home', ['user' => $user_auth, 'posts' => $posts ]);
     }
 }
 

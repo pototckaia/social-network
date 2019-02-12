@@ -9,8 +9,9 @@ class Authentication extends Controller
 {
     static function isHappen() {
         $id_session =  session()->getId();
-        $id_cookie = Cookie::get('id_session');;
-            return $id_session === $id_cookie;
+        $id_cookie = Cookie::get('id_session');
+        $id = session()->get('id_user');
+        return $id_session === $id_cookie && isset($id);
     }
 
     static function user() {
@@ -55,5 +56,16 @@ class Authentication extends Controller
 
         Cookie::queue(Cookie::forget('id_session'));
     }
+
+    static function logout(){
+        static::forgetAuthUser();
+        session()->regenerate();
+    }
+
+    static function login(User $user) {
+        static::regenerate();
+        static::setAuthUser($user);
+    }
+
 
 }

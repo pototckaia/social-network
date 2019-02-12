@@ -9,7 +9,7 @@ class Post extends Model
     protected $table_ = "posts";
 
     protected $fillable = [
-        'title','content','comments_enable'
+        'title','content','comments_enable', 'id_owner'
     ];
 
     public function user()
@@ -20,5 +20,9 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany('App\Comment', 'id_post', 'id');
+    }
+
+    public function is_owner(User $user) {
+        return $user->id === $this->id_owner;
     }
 }

@@ -53,18 +53,14 @@ class LoginController extends Controller
             return back()->withErrors(['general' => 'Wrong login or password']);
         }
 
-        Authentication::regenerate();
-        Authentication::setAuthUser($user);
+        Authentication::login($user);
 
         return redirect()->intended($this::redirectTo);
 
     }
 
     public function logout(Request $request) {
-
-        Authentication::regenerate();
-        Authentication::forgetAuthUser();
-
+        Authentication::logout();
         return redirect($this::redirectTo);
     }
 }

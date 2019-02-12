@@ -20,16 +20,14 @@ Route::get('phpinfo', function()
 
 Route::get('/', function ()
 {
-    $auth = \App\Http\Controllers\Authentication::isHappen();
-    return view('welcome', ['auth' => $auth]);
-
+    return view('welcome');
 })->name('welcome');
 
 Route::get('/users', function()
 {
     $users = \App\User::all();
-    return View::make('users')->with('users', $users);
-})->name('index_users');
+    return $users;
+});
 
 
 
@@ -68,10 +66,19 @@ Route::delete('/me', 'ProfileController@destroy')
 
 Route::put('/me', 'ProfileController@update')
     ->name('me.update');
+// _____________________________
 
+Route::resource('/post', 'PostController');
 
-Route::resource('post', 'PostController')
-    ->except(['index']);
+//Route::post('/comment/{parent}', 'CommentController@store')
+//    ->name('comment.store')
+//    ->where(['parent' => '[0-9]']);
+//
 
-Route::resource('comment', 'CommentController')
-    ->except(['index']);
+//Route::apiResources([
+//   'photos' => 'PhotoController',
+//   'posts' => 'PostController'
+//]);
+
+//Route::resource('comment', 'CommentController')
+//   ->except(['index']);
